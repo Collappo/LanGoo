@@ -22,7 +22,7 @@ export const FlashcardsMode: React.FC<FlashcardsModeProps> = ({ set, onExit }) =
     if (known) {
       setKnownWords(prev => [...new Set([...prev, currentWord.id])]);
     }
-    
+
     if (currentIndex < set.words.length - 1) {
       setIsFlipped(false);
       setTimeout(() => setCurrentIndex(prev => prev + 1), 100);
@@ -47,7 +47,7 @@ export const FlashcardsMode: React.FC<FlashcardsModeProps> = ({ set, onExit }) =
         <motion.div
           animate={{ rotateY: isFlipped ? 180 : 0 }}
           transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-          className="relative w-full h-full transition-all duration-500 preserve-3d"
+          className="relative w-full h-full transition-all duration-100 preserve-3d"
         >
           {/* Front */}
           <div className="absolute inset-0 backface-hidden bg-surface border border-border rounded-[2.5rem] shadow-xl flex flex-col items-center justify-center p-10 text-center">
@@ -57,7 +57,7 @@ export const FlashcardsMode: React.FC<FlashcardsModeProps> = ({ set, onExit }) =
           </div>
 
           {/* Back */}
-          <div 
+          <div
             className="absolute inset-0 backface-hidden bg-surface border border-border rounded-[2.5rem] shadow-xl flex flex-col items-center justify-center p-10 text-center"
             style={{ transform: 'rotateY(180deg)' }}
           >
