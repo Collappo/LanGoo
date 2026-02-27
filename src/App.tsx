@@ -13,6 +13,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { TestMode } from './modes/TestMode';
 import { TimeAttackMode } from './modes/TimeAttackMode';
 import { ListeningMode } from './modes/ListeningMode';
+import { CreateSet } from './components/CreateSet';
 import { 
   BookOpen, 
   Brain, 
@@ -33,7 +34,8 @@ import {
 const Dashboard: React.FC<{ 
   onSelectSet: (set: WordSet, mode: string) => void;
   onOpenSettings: () => void;
-}> = ({ onSelectSet, onOpenSettings }) => {
+  onCreateSet: () => void;
+}> = ({ onSelectSet, onOpenSettings, onCreateSet }) => {
   const { sets, globalStats, stats } = useData();
   const [search, setSearch] = useState('');
 
@@ -158,7 +160,10 @@ const Dashboard: React.FC<{
           );
         })}
         
-        <button className="bg-bg border-2 border-dashed border-border p-8 rounded-[2.5rem] flex flex-col items-center justify-center gap-4 text-text-muted hover:border-accent hover:text-accent transition-all group">
+        <button 
+          onClick={onCreateSet}
+          className="bg-bg border-2 border-dashed border-border p-8 rounded-[2.5rem] flex flex-col items-center justify-center gap-4 text-text-muted hover:border-accent hover:text-accent transition-all group"
+        >
           <div className="p-4 bg-surface rounded-full group-hover:scale-110 transition-transform shadow-sm">
             <Plus size={32} />
           </div>
@@ -173,6 +178,7 @@ export default function App() {
   const [activeSet, setActiveSet] = useState<WordSet | null>(null);
   const [activeMode, setActiveMode] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [showCreateSet, setShowCreateSet] = useState(false);
 
   const handleSelectSet = (set: WordSet, mode: string) => {
     setActiveSet(set);
@@ -183,6 +189,7 @@ export default function App() {
     setActiveSet(null);
     setActiveMode(null);
     setShowSettings(false);
+    setShowCreateSet(false);
   };
 
   return (
@@ -190,7 +197,7 @@ export default function App() {
       <DataProvider>
         <div className="min-h-screen font-sans selection:bg-accent/30">
           <AnimatePresence mode="wait">
-            {!activeSet && !showSettings && (
+            {!activeSet && !showSettings && !showCreateSet && (
               <motion.div
                 key="dashboard"
                 initial={{ opacity: 0 }}
@@ -200,6 +207,7 @@ export default function App() {
                 <Dashboard 
                   onSelectSet={handleSelectSet} 
                   onOpenSettings={() => setShowSettings(true)}
+                  onCreateSet={() => setShowCreateSet(true)}
                 />
               </motion.div>
             )}
@@ -213,6 +221,18 @@ export default function App() {
                 className="max-w-6xl mx-auto px-4 py-10"
               >
                 <Settings onExit={handleExit} />
+              </motion.div>
+            )}
+
+            {showCreateSet && (
+              <motion.div
+                key="createSet"
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -50 }}
+                className="max-w-6xl mx-auto px-4 py-10"
+              >
+                <CreateSet onExit={handleExit} />
               </motion.div>
             )}
 
