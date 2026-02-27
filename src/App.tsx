@@ -11,6 +11,8 @@ import { Settings } from './components/Settings';
 import { WordSet } from './types';
 import { motion, AnimatePresence } from 'motion/react';
 import { TestMode } from './modes/TestMode';
+import { TimeAttackMode } from './modes/TimeAttackMode';
+import { ListeningMode } from './modes/ListeningMode';
 import { 
   BookOpen, 
   Brain, 
@@ -23,7 +25,9 @@ import {
   BarChart3,
   Search,
   ChevronRight,
-  ClipboardCheck
+  ClipboardCheck,
+  Timer as TimerIcon,
+  Headphones
 } from 'lucide-react';
 
 const Dashboard: React.FC<{ 
@@ -53,7 +57,6 @@ const Dashboard: React.FC<{
           <p className="text-text-muted font-medium">Witaj z powrotem! Kontynuuj swoją naukę.</p>
         </div>
         <div className="flex items-center gap-3">
-          <ThemeSwitcher />
           <button 
             onClick={onOpenSettings}
             className="p-3 bg-surface border border-border rounded-2xl text-text-muted hover:text-text transition-colors shadow-sm"
@@ -116,7 +119,7 @@ const Dashboard: React.FC<{
               <div className="mt-auto grid grid-cols-2 gap-3">
                 <button 
                   onClick={() => onSelectSet(set, 'learn')}
-                  className="flex items-center justify-center gap-2 py-3 bg-primary text-surface rounded-xl font-bold hover:opacity-90 transition-all"
+                  className="flex items-center justify-center gap-2 py-3 bg-primary text-surface rounded-xl font-bold hover:opacity-90 transition-all col-span-2"
                 >
                   <Brain size={18} /> Ucz się
                 </button>
@@ -133,8 +136,20 @@ const Dashboard: React.FC<{
                   Fiszki
                 </button>
                 <button 
-                  onClick={() => onSelectSet(set, 'memory')}
+                  onClick={() => onSelectSet(set, 'time_attack')}
                   className="flex items-center justify-center gap-2 py-3 bg-bg border border-border rounded-xl font-bold hover:border-accent transition-all"
+                >
+                  <TimerIcon size={18} /> Na Czas
+                </button>
+                <button 
+                  onClick={() => onSelectSet(set, 'listening')}
+                  className="flex items-center justify-center gap-2 py-3 bg-bg border border-border rounded-xl font-bold hover:border-accent transition-all"
+                >
+                  <Headphones size={18} /> Ze Słuchu
+                </button>
+                <button 
+                  onClick={() => onSelectSet(set, 'memory')}
+                  className="flex items-center justify-center gap-2 py-3 bg-bg border border-border rounded-xl font-bold hover:border-accent transition-all col-span-2"
                 >
                   <Gamepad2 size={18} /> Memory
                 </button>
@@ -234,6 +249,30 @@ export default function App() {
                 className="px-4 py-10"
               >
                 <FlashcardsMode set={activeSet} onExit={handleExit} />
+              </motion.div>
+            )}
+
+            {activeSet && activeMode === 'time_attack' && (
+              <motion.div
+                key="time_attack"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1.1 }}
+                className="px-4 py-10"
+              >
+                <TimeAttackMode set={activeSet} onExit={handleExit} />
+              </motion.div>
+            )}
+
+            {activeSet && activeMode === 'listening' && (
+              <motion.div
+                key="listening"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1.1 }}
+                className="px-4 py-10"
+              >
+                <ListeningMode set={activeSet} onExit={handleExit} />
               </motion.div>
             )}
 

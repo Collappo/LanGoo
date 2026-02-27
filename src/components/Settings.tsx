@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { WordSet } from '../types';
 import { useData } from '../context/DataContext';
 import { motion } from 'motion/react';
-import { X, Save, Download, Upload, Trash2, Plus, Info } from 'lucide-react';
+import { X, Save, Download, Upload, Trash2, Plus, Info, Palette } from 'lucide-react';
+import { ThemeSwitcher } from './ThemeSwitcher';
 
 export const Settings: React.FC<{ onExit: () => void }> = ({ onExit }) => {
   const { sets, setSets, importData, exportData } = useData();
@@ -46,6 +47,18 @@ export const Settings: React.FC<{ onExit: () => void }> = ({ onExit }) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Appearance Section */}
+        <div className="bg-surface p-8 rounded-[2rem] border border-border shadow-sm md:col-span-2">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-2 bg-accent/10 text-accent rounded-xl">
+              <Palette size={20} />
+            </div>
+            <h3 className="text-xl font-bold">Wygląd aplikacji</h3>
+          </div>
+          <p className="text-text-muted text-sm mb-6">Wybierz motyw kolorystyczny, który najbardziej Ci odpowiada.</p>
+          <ThemeSwitcher />
+        </div>
+
         {/* Export Section */}
         <div className="bg-surface p-8 rounded-[2rem] border border-border shadow-sm">
           <div className="flex items-center gap-3 mb-6">
