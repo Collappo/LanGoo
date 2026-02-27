@@ -6,16 +6,17 @@ import { X, Plus, Save, Trash2, FileText, ArrowDown } from 'lucide-react';
 
 interface CreateSetProps {
   onExit: () => void;
+  initialSet?: WordSet;
 }
 
-export const CreateSet: React.FC<CreateSetProps> = ({ onExit }) => {
+export const CreateSet: React.FC<CreateSetProps> = ({ onExit, initialSet }) => {
   const { setSets } = useData();
-  const [name, setName] = useState('');
-  const [langA, setLangA] = useState('');
-  const [langB, setLangB] = useState('');
-  const [words, setWords] = useState<{ id: string; wordA: string; wordB: string }[]>([
-    { id: Date.now().toString(), wordA: '', wordB: '' }
-  ]);
+  const [name, setName] = useState(initialSet?.name || '');
+  const [langA, setLangA] = useState(initialSet?.langA || '');
+  const [langB, setLangB] = useState(initialSet?.langB || '');
+  const [words, setWords] = useState<{ id: string; wordA: string; wordB: string }[]>(
+    initialSet?.words.map(w => ({ ...w })) || [{ id: Date.now().toString(), wordA: '', wordB: '' }]
+  );
   const [bulkText, setBulkText] = useState('');
   const [showBulk, setShowBulk] = useState(false);
 
@@ -69,7 +70,7 @@ export const CreateSet: React.FC<CreateSetProps> = ({ onExit }) => {
     }
 
     const newSet: WordSet = {
-      id: Date.now().toString(),
+      id: initialSet?.id || Date.now().toString(),
       name: name.trim(),
       langA: langA.trim(),
       langB: langB.trim(),
@@ -78,17 +79,21 @@ export const CreateSet: React.FC<CreateSetProps> = ({ onExit }) => {
         wordA: w.wordA.trim(),
         wordB: w.wordB.trim()
       })),
-      createdAt: Date.now()
+      createdAt: initialSet?.createdAt || Date.now()
     };
 
-    setSets(prev => [...prev, newSet]);
+    if (initialSet) {
+      setSets(prev => prev.map(s => s.id === initialSet.id ? newSet : s));
+    } else {
+      setSets(prev => [...prev, newSet]);
+    }
     onExit();
   };
 
   return (
     <div className="max-w-4xl mx-auto pb-20">
       <div className="flex justify-between items-center mb-8 sticky top-0 bg-bg/80 backdrop-blur-md py-4 z-10">
-        <h2 className="text-3xl font-bold">Nowy Zestaw</h2>
+        <h2 className="text-3xl font-bold">{initialSet ? 'Edytuj Zestaw' : 'Nowy Zestaw'}</h2>
         <div className="flex gap-2">
           <button 
             onClick={handleSave}

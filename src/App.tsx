@@ -28,14 +28,18 @@ import {
   ChevronRight,
   ClipboardCheck,
   Timer as TimerIcon,
-  Headphones
+  Headphones,
+  Pencil,
+  Trash2
 } from 'lucide-react';
 
 const Dashboard: React.FC<{ 
   onSelectSet: (set: WordSet, mode: string) => void;
   onOpenSettings: () => void;
   onCreateSet: () => void;
-}> = ({ onSelectSet, onOpenSettings, onCreateSet }) => {
+  onEditSet: (set: WordSet) => void;
+  onDeleteSet: (set: WordSet) => void;
+}> = ({ onSelectSet, onOpenSettings, onCreateSet, onEditSet, onDeleteSet }) => {
   const { sets, globalStats, stats } = useData();
   const [search, setSearch] = useState('');
 
@@ -99,21 +103,38 @@ const Dashboard: React.FC<{
             <motion.div
               layoutId={set.id}
               key={set.id}
-              className="bg-surface p-8 rounded-[2.5rem] border border-border shadow-sm card-hover flex flex-col h-full"
+              className="bg-surface p-8 rounded-[2.5rem] border border-border shadow-sm card-hover flex flex-col h-full relative group"
             >
+              <div className="absolute top-6 right-6 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button 
+                  onClick={(e) => { e.stopPropagation(); onEditSet(set); }}
+                  className="p-2 bg-bg border border-border rounded-xl text-text-muted hover:text-text hover:border-accent transition-all"
+                  title="Edytuj"
+                >
+                  <Pencil size={16} />
+                </button>
+                <button 
+                  onClick={(e) => { e.stopPropagation(); onDeleteSet(set); }}
+                  className="p-2 bg-bg border border-border rounded-xl text-text-muted hover:text-error hover:border-error transition-all"
+                  title="Usuń"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+
               <div className="flex justify-between items-start mb-6">
                 <div className="p-3 bg-accent/10 text-accent rounded-2xl">
                   <Layers size={24} />
                 </div>
                 {setStat && (
-                  <div className="text-right">
+                  <div className="text-right mr-16 group-hover:mr-24 transition-all">
                     <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Skuteczność</p>
                     <p className="text-lg font-bold text-success">{Math.round(setStat.averageScore)}%</p>
                   </div>
                 )}
               </div>
               
-              <h3 className="text-xl font-bold mb-1">{set.name}</h3>
+              <h3 className="text-xl font-bold mb-1 pr-16">{set.name}</h3>
               <p className="text-text-muted text-sm font-medium mb-8">
                 {set.langA} → {set.langB} • {set.words.length} słówek
               </p>
@@ -162,7 +183,7 @@ const Dashboard: React.FC<{
         
         <button 
           onClick={onCreateSet}
-          className="bg-bg border-2 border-dashed border-border p-8 rounded-[2.5rem] flex flex-col items-center justify-center gap-4 text-text-muted hover:border-accent hover:text-accent transition-all group"
+          className="bg-bg border-2 border-dashed border-border p-8 rounded-[2.5rem] flex flex-col items-center justify-center gap-4 text-text-muted hover:border-accent hover:text-accent transition-all group min-h-[300px]"
         >
           <div className="p-4 bg-surface rounded-full group-hover:scale-110 transition-transform shadow-sm">
             <Plus size={32} />
@@ -174,11 +195,13 @@ const Dashboard: React.FC<{
   );
 };
 
-export default function App() {
+const AppContent = () => {
+  const { setSets } = useData();
   const [activeSet, setActiveSet] = useState<WordSet | null>(null);
   const [activeMode, setActiveMode] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const [showCreateSet, setShowCreateSet] = useState(false);
+  const [editingSet, setEditingSet] = useState<WordSet | undefined>(undefined);
 
   const handleSelectSet = (set: WordSet, mode: string) => {
     setActiveSet(set);
@@ -190,125 +213,145 @@ export default function App() {
     setActiveMode(null);
     setShowSettings(false);
     setShowCreateSet(false);
+    setEditingSet(undefined);
+  };
+
+  const handleEditSet = (set: WordSet) => {
+    setEditingSet(set);
+    setShowCreateSet(true);
+  };
+
+  const handleDeleteSet = (set: WordSet) => {
+    if (confirm(`Czy na pewno chcesz usunąć zestaw "${set.name}"?`)) {
+      setSets(prev => prev.filter(s => s.id !== set.id));
+    }
   };
 
   return (
+    <div className="min-h-screen font-sans selection:bg-accent/30">
+      <AnimatePresence mode="wait">
+        {!activeSet && !showSettings && !showCreateSet && (
+          <motion.div
+            key="dashboard"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <Dashboard 
+              onSelectSet={handleSelectSet} 
+              onOpenSettings={() => setShowSettings(true)}
+              onCreateSet={() => { setEditingSet(undefined); setShowCreateSet(true); }}
+              onEditSet={handleEditSet}
+              onDeleteSet={handleDeleteSet}
+            />
+          </motion.div>
+        )}
+
+        {showSettings && (
+          <motion.div
+            key="settings"
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -100 }}
+            className="max-w-6xl mx-auto px-4 py-10"
+          >
+            <Settings onExit={handleExit} />
+          </motion.div>
+        )}
+
+        {showCreateSet && (
+          <motion.div
+            key="createSet"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            className="max-w-6xl mx-auto px-4 py-10"
+          >
+            <CreateSet onExit={handleExit} initialSet={editingSet} />
+          </motion.div>
+        )}
+
+        {activeSet && activeMode === 'learn' && (
+          <motion.div
+            key="learn"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            className="px-4 py-10"
+          >
+            <LearnMode set={activeSet} onExit={handleExit} />
+          </motion.div>
+        )}
+
+        {activeSet && activeMode === 'test' && (
+          <motion.div
+            key="test"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            className="px-4 py-10"
+          >
+            <TestMode set={activeSet} onExit={handleExit} />
+          </motion.div>
+        )}
+
+        {activeSet && activeMode === 'flashcards' && (
+          <motion.div
+            key="flashcards"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.1 }}
+            className="px-4 py-10"
+          >
+            <FlashcardsMode set={activeSet} onExit={handleExit} />
+          </motion.div>
+        )}
+
+        {activeSet && activeMode === 'time_attack' && (
+          <motion.div
+            key="time_attack"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.1 }}
+            className="px-4 py-10"
+          >
+            <TimeAttackMode set={activeSet} onExit={handleExit} />
+          </motion.div>
+        )}
+
+        {activeSet && activeMode === 'listening' && (
+          <motion.div
+            key="listening"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.1 }}
+            className="px-4 py-10"
+          >
+            <ListeningMode set={activeSet} onExit={handleExit} />
+          </motion.div>
+        )}
+
+        {activeSet && activeMode === 'memory' && (
+          <motion.div
+            key="memory"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="px-4 py-10"
+          >
+            <MemoryMode set={activeSet} onExit={handleExit} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+export default function App() {
+  return (
     <ThemeProvider>
       <DataProvider>
-        <div className="min-h-screen font-sans selection:bg-accent/30">
-          <AnimatePresence mode="wait">
-            {!activeSet && !showSettings && !showCreateSet && (
-              <motion.div
-                key="dashboard"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              >
-                <Dashboard 
-                  onSelectSet={handleSelectSet} 
-                  onOpenSettings={() => setShowSettings(true)}
-                  onCreateSet={() => setShowCreateSet(true)}
-                />
-              </motion.div>
-            )}
-
-            {showSettings && (
-              <motion.div
-                key="settings"
-                initial={{ opacity: 0, x: 100 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -100 }}
-                className="max-w-6xl mx-auto px-4 py-10"
-              >
-                <Settings onExit={handleExit} />
-              </motion.div>
-            )}
-
-            {showCreateSet && (
-              <motion.div
-                key="createSet"
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -50 }}
-                className="max-w-6xl mx-auto px-4 py-10"
-              >
-                <CreateSet onExit={handleExit} />
-              </motion.div>
-            )}
-
-            {activeSet && activeMode === 'learn' && (
-              <motion.div
-                key="learn"
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -50 }}
-                className="px-4 py-10"
-              >
-                <LearnMode set={activeSet} onExit={handleExit} />
-              </motion.div>
-            )}
-
-            {activeSet && activeMode === 'test' && (
-              <motion.div
-                key="test"
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -50 }}
-                className="px-4 py-10"
-              >
-                <TestMode set={activeSet} onExit={handleExit} />
-              </motion.div>
-            )}
-
-            {activeSet && activeMode === 'flashcards' && (
-              <motion.div
-                key="flashcards"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 1.1 }}
-                className="px-4 py-10"
-              >
-                <FlashcardsMode set={activeSet} onExit={handleExit} />
-              </motion.div>
-            )}
-
-            {activeSet && activeMode === 'time_attack' && (
-              <motion.div
-                key="time_attack"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 1.1 }}
-                className="px-4 py-10"
-              >
-                <TimeAttackMode set={activeSet} onExit={handleExit} />
-              </motion.div>
-            )}
-
-            {activeSet && activeMode === 'listening' && (
-              <motion.div
-                key="listening"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 1.1 }}
-                className="px-4 py-10"
-              >
-                <ListeningMode set={activeSet} onExit={handleExit} />
-              </motion.div>
-            )}
-
-            {activeSet && activeMode === 'memory' && (
-              <motion.div
-                key="memory"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="px-4 py-10"
-              >
-                <MemoryMode set={activeSet} onExit={handleExit} />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+        <AppContent />
       </DataProvider>
     </ThemeProvider>
   );
