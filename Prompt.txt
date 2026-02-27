@@ -1,0 +1,271 @@
+Jesteś doświadczonym architektem oprogramowania i seniorem frontend developerem specjalizującym się w React, TypeScript oraz projektowaniu aplikacji edukacyjnych.
+
+Twoim zadaniem jest zaprojektowanie i wygenerowanie kompletnej aplikacji internetowej do nauki języków obcych z naciskiem na zestawy słówek.
+
+---
+
+# 🎯 CEL APLIKACJI
+
+Aplikacja do nauki języków obcych oparta o zestawy słówek, umożliwiająca różne tryby nauki, zapisywanie postępów w localStorage oraz obsługę wielu motywów kolorystycznych.
+
+---
+
+# 🧱 WYMAGANIA TECHNICZNE
+
+## Stack technologiczny
+
+* React (najnowsza stabilna wersja)
+* TypeScript (strict mode)
+* Vite (preferowane) lub inny nowoczesny bundler
+* Nowoczesny, minimalistyczny UI
+* Funkcyjny React + hooks
+* Podejście modularne i skalowalne
+* Brak zbędnych bibliotek (lekkość aplikacji)
+
+---
+
+# 🗂 STRUKTURA DANYCH
+
+## 1️⃣ data.js
+
+Plik `data.js` jest początkowo pusty, ale zawiera komentarz opisujący strukturę danych.
+
+Gemini ma:
+
+* Zaprojektować strukturę danych zgodnie z komentarzem
+* Zapewnić możliwość:
+
+  * odczytu danych
+  * zapisu danych
+  * synchronizacji z localStorage
+  * kopiowania zawartości localStorage (JSON)
+  * wklejania zawartości ręcznie na stronie (import/export danych)
+
+### Struktura danych powinna obsługiwać:
+
+* wiele zestawów
+* nazwę zestawu
+* język źródłowy
+* język docelowy
+* tablicę słówek:
+
+  * id
+  * wordA
+  * wordB
+  * opcjonalne dodatkowe informacje
+
+---
+
+# 📚 TRYBY NAUKI
+
+Aplikacja musi zawierać następujące tryby:
+
+---
+
+## 🃏 1. Fiszki
+
+* Wyświetlanie słówka
+* Kliknięcie/obrót pokazuje tłumaczenie
+* Oznaczanie: „Umiem” / „Nie umiem”
+* Dane zapisywane w statystykach
+
+---
+
+## 🎮 2. Gry pamięciowe
+
+Proste gry pomagające zapamiętać słownictwo, np.:
+
+* Dopasowywanie par
+* Memory
+* Łączenie słowa z tłumaczeniem
+
+Kod powinien być czysty i łatwo rozszerzalny o kolejne gry.
+
+---
+
+## 🧠 3. Test
+
+* Klasyczny test
+* Jedno pytanie = jedno słowo
+* Wpisywanie odpowiedzi lub wybór z listy
+* Podsumowanie po zakończeniu
+
+---
+
+## 📘 4. TRYB „UCZ SIĘ” (najważniejszy)
+
+To kluczowy tryb aplikacji.
+
+### Mechanika:
+
+* Wyświetlane jest słowo:
+
+  * albo po polsku
+  * albo w języku obcym (losowo)
+* Użytkownik dostaje 4 odpowiedzi:
+
+  * 1 poprawna
+  * 3 losowe błędne
+* Błędne odpowiedzi muszą być:
+
+  * różne od siebie
+  * różne od poprawnej
+  * losowane dynamicznie
+
+### Logika powtórzeń:
+
+Jeśli użytkownik wybierze błędną odpowiedź:
+
+* pytanie NIE znika
+* zostaje dodane na koniec tury
+* przy kolejnym wyświetleniu:
+
+  * generowane są nowe błędne odpowiedzi
+
+Po zakończeniu tury:
+
+* wyświetlane jest podsumowanie:
+
+  * % poprawnych odpowiedzi
+  * liczba błędów
+  * czas trwania
+  * liczba powtórzeń
+
+---
+
+# 📊 STATYSTYKI
+
+Aplikacja musi posiadać:
+
+## Statystyki zestawu:
+
+* liczba podejść
+* % poprawnych odpowiedzi
+* liczba przerobionych słówek
+* średnia skuteczność
+* historia ostatnich sesji
+
+## Statystyki globalne:
+
+* liczba przerobionych zestawów
+* łączna liczba odpowiedzi
+* ogólny % skuteczności
+* liczba godzin nauki (szacowana)
+* zapisane w localStorage
+
+---
+
+# 🎨 MOTYWY KOLORYSTYCZNE
+
+Motywy pobierane z pliku `themes.ts`.
+
+## Wymagania:
+
+* kilka gotowych motywów (np.:
+
+  * light
+  * dark
+  * pastel
+  * ocean
+  * forest)
+* zmiana motywu dynamicznie
+* zapis wyboru w localStorage
+* wykorzystanie CSS variables
+* elegancki, nowoczesny, minimalistyczny wygląd
+
+---
+
+# 🧩 ARCHITEKTURA
+
+Zastosuj:
+
+* modularną strukturę folderów
+* custom hooks
+* kontekst React (Context API) dla:
+
+  * danych
+  * statystyk
+  * motywu
+* separację:
+
+  * logiki biznesowej
+  * komponentów UI
+* typowanie wszystkich struktur
+
+---
+
+# 🧠 JAKOŚĆ KODU
+
+Wymagania:
+
+* czysty kod
+* brak any
+* czytelne typy
+* podział na:
+
+  * components
+  * hooks
+  * utils
+  * context
+  * types
+* możliwość łatwego skalowania
+
+---
+
+# 🖥 UI / UX
+
+Wygląd:
+
+* nowoczesny
+* minimalistyczny
+* dużo przestrzeni
+* delikatne animacje
+* responsywność
+* intuicyjna nawigacja
+
+Nie używaj ciężkich bibliotek UI — styluj własnoręcznie.
+
+---
+
+# 🔐 LOCAL STORAGE
+
+Zaimplementuj:
+
+* automatyczny zapis postępów
+* eksport danych (kopiuj JSON)
+* import danych (wklej JSON)
+* walidację danych przy imporcie
+
+---
+
+# 📦 WYNIK
+
+Gemini ma wygenerować:
+
+1. Struktura projektu
+2. Wszystkie kluczowe pliki
+3. Typy TypeScript
+4. Logikę trybu „Ucz się”
+5. Obsługę statystyk
+6. System motywów
+7. Przykładowe dane w komentarzu w data.js
+8. Instrukcję uruchomienia projektu
+
+Kod ma być kompletny i możliwy do uruchomienia.
+
+---
+
+# ⚠️ DODATKOWE WYMAGANIA
+
+* Nie upraszczaj logiki trybu „Ucz się”
+* Zapewnij brak powtarzania błędnych odpowiedzi w tej samej rundzie
+* Zapewnij poprawne mieszanie odpowiedzi
+* Zaprojektuj rozwiązanie skalowalne
+* Zoptymalizowane animacje
+* Aplikacja powinna być Mobile-First ale z bardzo dobrą wersją dla desktopów
+
+---
+
+Wygeneruj kompletną aplikację wraz z kodem.
+
+---
