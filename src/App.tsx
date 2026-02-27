@@ -14,15 +14,15 @@ import { TestMode } from './modes/TestMode';
 import { TimeAttackMode } from './modes/TimeAttackMode';
 import { ListeningMode } from './modes/ListeningMode';
 import { CreateSet } from './components/CreateSet';
-import { 
-  BookOpen, 
-  Brain, 
-  Layers, 
-  Gamepad2, 
-  Settings as SettingsIcon, 
-  Plus, 
-  Clock, 
-  Target, 
+import {
+  BookOpen,
+  Brain,
+  Layers,
+  Gamepad2,
+  Settings as SettingsIcon,
+  Plus,
+  Clock,
+  Target,
   BarChart3,
   Search,
   ChevronRight,
@@ -33,7 +33,7 @@ import {
   Trash2
 } from 'lucide-react';
 
-const Dashboard: React.FC<{ 
+const Dashboard: React.FC<{
   onSelectSet: (set: WordSet, mode: string) => void;
   onOpenSettings: () => void;
   onCreateSet: () => void;
@@ -43,7 +43,7 @@ const Dashboard: React.FC<{
   const { sets, globalStats, stats } = useData();
   const [search, setSearch] = useState('');
 
-  const filteredSets = sets.filter(s => 
+  const filteredSets = sets.filter(s =>
     s.name.toLowerCase().includes(search.toLowerCase()) ||
     s.langA.toLowerCase().includes(search.toLowerCase()) ||
     s.langB.toLowerCase().includes(search.toLowerCase())
@@ -59,11 +59,11 @@ const Dashboard: React.FC<{
     <div className="max-w-6xl mx-auto px-4 py-10">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
         <div>
-          <h1 className="text-4xl font-black tracking-tight mb-2">Linguist</h1>
+          <h1 className="text-4xl font-black tracking-tight mb-2">LanGoo</h1>
           <p className="text-text-muted font-medium">Witaj z powrotem! Kontynuuj swoją naukę.</p>
         </div>
         <div className="flex items-center gap-3">
-          <button 
+          <button
             onClick={onOpenSettings}
             className="p-3 bg-surface border border-border rounded-2xl text-text-muted hover:text-text transition-colors shadow-sm"
           >
@@ -86,7 +86,7 @@ const Dashboard: React.FC<{
         </h2>
         <div className="relative w-full md:w-80">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
-          <input 
+          <input
             type="text"
             placeholder="Szukaj zestawów..."
             value={search}
@@ -106,14 +106,14 @@ const Dashboard: React.FC<{
               className="bg-surface p-8 rounded-[2.5rem] border border-border shadow-sm card-hover flex flex-col h-full relative group"
             >
               <div className="absolute top-6 right-6 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button 
+                <button
                   onClick={(e) => { e.stopPropagation(); onEditSet(set); }}
                   className="p-2 bg-bg border border-border rounded-xl text-text-muted hover:text-text hover:border-accent transition-all"
                   title="Edytuj"
                 >
                   <Pencil size={16} />
                 </button>
-                <button 
+                <button
                   onClick={(e) => { e.stopPropagation(); onDeleteSet(set); }}
                   className="p-2 bg-bg border border-border rounded-xl text-text-muted hover:text-error hover:border-error transition-all"
                   title="Usuń"
@@ -133,44 +133,44 @@ const Dashboard: React.FC<{
                   </div>
                 )}
               </div>
-              
+
               <h3 className="text-xl font-bold mb-1 pr-16">{set.name}</h3>
               <p className="text-text-muted text-sm font-medium mb-8">
                 {set.langA} → {set.langB} • {set.words.length} słówek
               </p>
 
               <div className="mt-auto grid grid-cols-2 gap-3">
-                <button 
+                <button
                   onClick={() => onSelectSet(set, 'learn')}
                   className="flex items-center justify-center gap-2 py-3 bg-primary text-surface rounded-xl font-bold hover:opacity-90 transition-all col-span-2"
                 >
                   <Brain size={18} /> Ucz się
                 </button>
-                <button 
+                <button
                   onClick={() => onSelectSet(set, 'test')}
                   className="flex items-center justify-center gap-2 py-3 bg-bg border border-border rounded-xl font-bold hover:border-accent transition-all"
                 >
                   <ClipboardCheck size={18} /> Test
                 </button>
-                <button 
+                <button
                   onClick={() => onSelectSet(set, 'flashcards')}
                   className="flex items-center justify-center gap-2 py-3 bg-bg border border-border rounded-xl font-bold hover:border-accent transition-all"
                 >
                   Fiszki
                 </button>
-                <button 
+                <button
                   onClick={() => onSelectSet(set, 'time_attack')}
                   className="flex items-center justify-center gap-2 py-3 bg-bg border border-border rounded-xl font-bold hover:border-accent transition-all"
                 >
                   <TimerIcon size={18} /> Na Czas
                 </button>
-                <button 
+                <button
                   onClick={() => onSelectSet(set, 'listening')}
                   className="flex items-center justify-center gap-2 py-3 bg-bg border border-border rounded-xl font-bold hover:border-accent transition-all"
                 >
                   <Headphones size={18} /> Ze Słuchu
                 </button>
-                <button 
+                <button
                   onClick={() => onSelectSet(set, 'memory')}
                   className="flex items-center justify-center gap-2 py-3 bg-bg border border-border rounded-xl font-bold hover:border-accent transition-all col-span-2"
                 >
@@ -180,8 +180,8 @@ const Dashboard: React.FC<{
             </motion.div>
           );
         })}
-        
-        <button 
+
+        <button
           onClick={onCreateSet}
           className="bg-bg border-2 border-dashed border-border p-8 rounded-[2.5rem] flex flex-col items-center justify-center gap-4 text-text-muted hover:border-accent hover:text-accent transition-all group min-h-[300px]"
         >
@@ -237,8 +237,8 @@ const AppContent = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <Dashboard 
-              onSelectSet={handleSelectSet} 
+            <Dashboard
+              onSelectSet={handleSelectSet}
               onOpenSettings={() => setShowSettings(true)}
               onCreateSet={() => { setEditingSet(undefined); setShowCreateSet(true); }}
               onEditSet={handleEditSet}
