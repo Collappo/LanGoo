@@ -30,7 +30,8 @@ import {
   Timer as TimerIcon,
   Headphones,
   Pencil,
-  Trash2
+  Trash2,
+  Github
 } from 'lucide-react';
 
 const Dashboard: React.FC<{
@@ -63,6 +64,12 @@ const Dashboard: React.FC<{
           <p className="text-text-muted font-medium">Witaj z powrotem! Kontynuuj swoją naukę.</p>
         </div>
         <div className="flex items-center gap-3">
+          <a href="https://github.com/Collappo" target="_blank"
+            className="p-3 bg-surface border border-border rounded-2xl text-text-muted hover:text-text transition-colors shadow-sm"
+          >
+            <Github />
+          </a>
+
           <button
             onClick={onOpenSettings}
             className="p-3 bg-surface border border-border rounded-2xl text-text-muted hover:text-text transition-colors shadow-sm"
